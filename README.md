@@ -16,15 +16,12 @@ Python 3:
 
 # Usage
 
-`# altdns -i subdomains.txt -w words.txt -t 100 -l 1G`
+`# altdns -i subdomains.txt -w words.txt -t 100 -l 1G | puredns resolve`
 
-- `subdomains.txt` contains the known subdomains for an organization
-- `data_output` is a file that will contain the _massive_ list of altered and permuted subdomains
-- `words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
-- the `-r` command resolves each generated, permuted subdomain
-- the `-s` command tells altdns where to save the results of the resolved permuted subdomains. `results_output.txt` will contain the final list of permuted subdomains found that are valid and have a DNS record.
-- the `-t` command limits how many threads the resolver will use simultaneously
-- `-d 1.2.3.4` overrides the system default DNS resolver and will use the specified IP address as the resolving server. Setting this to the authoritative DNS server of the target domain *may* increase resolution performance 
+- `-i` subdomains.txt` contains the known subdomains for an organization
+- `-w` words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
+- `-t` command limits how many threads the resolver will use simultaneously
+- `-l` 1G How many bytes to output
 
 # Screenshots
 
