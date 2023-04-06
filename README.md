@@ -4,17 +4,11 @@ Altdns is a DNS recon tool that allows for the discovery of subdomains that conf
 
 From these two lists that are provided as input to altdns, the tool then generates a _massive_ output of "altered" or "mutated" potential subdomains that could be present. It saves this output so that it can then be used by your favourite DNS bruteforcing tool.
 
-Alternatively, the `-r` flag can be passed to altdns so that once this output is generated, the tool can then resolve these subdomains (multi-threaded) and save the results to a file.
-
 Altdns works best with large datasets. Having an initial dataset of 200 or more subdomains should churn out some valid subdomains via the alterations generated.
 
 Further information on attack methodology and this tool release can be found here: https://docs.google.com/presentation/d/1PCnjzCeklOeGMoWiE2IUzlRGOBxNp8K5hLQuvBNzrFY/
 
 # Installation
-
-Python 2:
-
-`pip install py-altdns==1.0.0`
 
 Python 3:
 
@@ -22,7 +16,7 @@ Python 3:
 
 # Usage
 
-`# altdns -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt`
+`# altdns -i subdomains.txt -w words.txt -t 100 -l 1G`
 
 - `subdomains.txt` contains the known subdomains for an organization
 - `data_output` is a file that will contain the _massive_ list of altered and permuted subdomains
