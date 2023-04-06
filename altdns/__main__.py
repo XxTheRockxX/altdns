@@ -10,7 +10,6 @@ except ImportError:
    import queue as queue
 
 import tldextract, sys
-#from tldextract.tldextract import LOG
 import logging
 
 logging.basicConfig(level=logging.CRITICAL)
@@ -18,7 +17,7 @@ logging.basicConfig(level=logging.CRITICAL)
 stop_threads = threading.Event()
 output_bytes_count = 0
 output_bytes_limit = 0
-#lock = threading.Lock()
+
 
 def read_file_linebyline(filename):
     with open(filename, 'r') as f:
