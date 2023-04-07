@@ -10,14 +10,15 @@ except ImportError:
    import queue as queue
 
 import tldextract, sys
+#from tldextract.tldextract import LOG
 import logging
 
 logging.basicConfig(level=logging.CRITICAL)
 
-stop_threads = threading.Event()
+terminate_threads = False
 output_bytes_count = 0
 output_bytes_limit = 0
-
+lock = threading.Lock()
 
 def read_file_linebyline(filename):
     with open(filename, 'r') as f:
@@ -133,41 +134,40 @@ def permutation_prefix_suffix_subdomain(current_sub, word, ext):
         current_sub[index] = original_sub
     return subdomain_permutations
 
-
 def worker(q, alteration_words):
-    global stop_threads, output_bytes_count, output_bytes_limit
-    while not stop_threads.is_set():
-        try:
-            subdomain = q.get()
-            if subdomain is None:
-                # This is the signal to exit
-                #q.task_done()
-                break
-            subdomain = subdomain.rstrip()
-            ext = tldextract.extract(subdomain)
-            current_sub = ext.subdomain.split(".")
-            for item in permutate_number_suffix_domains(current_sub=current_sub, ext=ext):
-                sys.stdout.write(item + '\n')
-                output_bytes_count += len(item) + 1
-            for word in alteration_words:
-                for item in permutate_index_subdomain(current_sub=current_sub, word=word, ext=ext):
-                    sys.stdout.write(item + '\n')
-                    output_bytes_count += len(item) + 1
-                for item in permutate_dashed_subdomains(current_sub=current_sub, word=word, ext=ext):
-                    sys.stdout.write(item + '\n')
-                    output_bytes_count += len(item) + 1
-                for item in permutation_prefix_suffix_subdomain(current_sub=current_sub, word=word, ext=ext):
-                    sys.stdout.write(item + '\n')
-                    output_bytes_count += len(item) + 1
-
-        except BrokenPipeError:
-            stop_threads.set()
-            #sys.exit(-1)# Signal all threads to stop
-            break
-        except Exception as e:
-            print(f"Unexpected error in worker: {e}")
-        finally:
+    global terminate_threads, output_bytes_count, output_bytes_limit
+    while True:
+        subdomain = q.get()
+        if subdomain is None:
+            # This is the signal to exit
             q.task_done()
+            break
+        if terminate_threads is True:
+            q.task_done()
+            break
+        if output_bytes_count > output_bytes_limit:
+            terminate_threads=True
+            q.task_done()
+            break
+        subdomain = subdomain.rstrip()
+        ext = tldextract.extract(subdomain)
+        current_sub = ext.subdomain.split(".")
+        for item in permutate_number_suffix_domains(current_sub=current_sub, ext=ext):
+            print(item)
+            output_bytes_count += len(item) + 1
+        for word in alteration_words:
+            for item in permutate_index_subdomain(current_sub=current_sub, word=word, ext=ext):
+                print(item)
+                output_bytes_count += len(item) + 1
+            for item in permutate_dashed_subdomains(current_sub=current_sub, word=word, ext=ext):
+                print(item)
+                output_bytes_count += len(item) + 1
+            for item in permutation_prefix_suffix_subdomain(current_sub=current_sub, word=word, ext=ext):
+                print(item)
+                output_bytes_count += len(item) + 1
+
+        q.task_done()
+
 
 def main(args):
     try:
@@ -189,8 +189,8 @@ def main(args):
         for _ in range(int(args.threads)):
             q.put(None)
 
-            # Wait for all work to be done
-        q.join()
+        # Wait for all work to be done
+        #q.join()
 
         # Wait for all threads to finish
         for t in threads:
@@ -215,17 +215,17 @@ def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input",
                         help="List of subdomains input", #required=True,
-                        default="tesla.subdomains")
+                        default="/opt/bb/ford.com.subdomains")
     parser.add_argument("-w", "--wordlist",
                         help="List of words to alter the subdomains with",
-                        required=False, default="/opt/wordlists/words.txt")
+                        required=False, default="/opt/wordlists/permwords.txt")
     parser.add_argument("-e", "--ignore-existing",
                         help="Ignore existing domains in file",
                         action="store_true")
 
     parser.add_argument("-t", "--threads",
                     help="Amount of threads to run simultaneously",
-                    required=False, default="35")
+                    required=False, default="60")
 
     parser.add_argument("-l", "--limit",
                         help="Limit the number of output bytes (e.g., 1G or 500M)",
@@ -237,9 +237,9 @@ def arg_parser():
 if __name__ == "__main__":
     try:
         args = arg_parser()
-        output_bytes_limit = size_to_bytes(args.limit)  # Set the output bytes limit
+        output_bytes_limit = size_to_bytes(args.limit)
         main(args)
     except KeyboardInterrupt:
         print("Interrupted by user. Exiting...")
-        stop_threads.set()
+        terminate_threads=True
         sys.exit(1)
