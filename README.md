@@ -1,4 +1,4 @@
-# Altdns - Subdomain discovery through alterations and permutations
+# Altdns - Updated - Subdomain discovery through alterations and permutations
 
 Altdns is a DNS recon tool that allows for the discovery of subdomains that conform to patterns. Altdns takes in words that could be present in subdomains under a domain (such as test, dev, staging) as well as takes in a list of subdomains that you know of.
 
@@ -17,10 +17,9 @@ Python 3:
 # Usage
 
 `# altdns -i subdomains.txt -w words.txt -t 100 -l 1G | puredns resolve`
-
 - `-i` subdomains.txt` contains the known subdomains for an organization
 - `-w` words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
-- `-t` command limits how many threads the resolver will use simultaneously
+- `-t` how many threads the resolver will use simultaneously
 - `-l` 1G How many bytes to output
 
 # Screenshots
