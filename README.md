@@ -8,21 +8,25 @@ Altdns works best with large datasets. Having an initial dataset of 200 or more 
 
 Further information on attack methodology and this tool release can be found here: https://docs.google.com/presentation/d/1PCnjzCeklOeGMoWiE2IUzlRGOBxNp8K5hLQuvBNzrFY/
 
+# Changes 3/1/2023:
+- You can now pipe to any subdomain resolving applications like massdns, puredns or shuffledns.
+- it no longer stores all the combindation in memory, and directly outputs to the pipe or flatfile.
+- you can limit the amount of data that feeds to your DNS resolver by passing a G or M value to it.
+
 # Installation
 
 Python 3:
+pip3 install -r requirements.txt
 
 # Usage
 
 `# python3 altdns -i subdomains.txt -w words.txt -t 100 -l 1G | puredns resolve`
 - `-i` subdomains.txt` contains the known subdomains for an organization
-- `-w` words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
+- `-w` words.txt is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
 - `-t` how many threads the resolver will use simultaneously
 - `-l` 1G How many bytes to output
 
 # Screenshots
-
-<img src="https://i.imgur.com/fkfZqkl.png" width="600px"/>
 
 <img src="https://i.imgur.com/Jyfue26.png" width="600px"/>
 
