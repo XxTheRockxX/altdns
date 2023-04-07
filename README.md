@@ -8,7 +8,7 @@ Altdns works best with large datasets. Having an initial dataset of 200 or more 
 
 Further information on attack methodology and this tool release can be found here: https://docs.google.com/presentation/d/1PCnjzCeklOeGMoWiE2IUzlRGOBxNp8K5hLQuvBNzrFY/
 
-# Changes 3/1/2023:
+**Changes 3/1/2023**:
 - You can now pipe to any subdomain resolving applications like massdns, puredns or shuffledns.
 - it no longer stores all the combindation in memory, and directly outputs to the pipe or flatfile.
 - you can limit the amount of data that feeds to your DNS resolver by passing a G or M value to it.
