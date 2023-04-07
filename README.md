@@ -12,11 +12,9 @@ Further information on attack methodology and this tool release can be found her
 
 Python 3:
 
-`pip3 install py-altdns==1.0.2`
-
 # Usage
 
-`# altdns -i subdomains.txt -w words.txt -t 100 -l 1G | puredns resolve`
+`# python altdns.py -i subdomains.txt -w words.txt -t 100 -l 1G | puredns resolve`
 - `-i` subdomains.txt` contains the known subdomains for an organization
 - `-w` words.txt` is your list of words that you'd like to permute your current subdomains with (i.e. `admin`, `staging`, `dev`, `qa`) - one word per line
 - `-t` how many threads the resolver will use simultaneously
