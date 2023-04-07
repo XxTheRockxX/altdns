@@ -79,6 +79,8 @@ confluence
 container
 control
 data
+dashboard
+dash
 dec
 demo
 dev
